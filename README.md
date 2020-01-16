@@ -235,6 +235,21 @@ The client side need to setup the RMI connection before controling the load gene
 	}
 ```
 More tutorial of RMI interface can be see from [here](https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/hello/hello-world.html)
+
+## Performance Evaluation
+We evaluate the performance of load generator tool and web inference service and show the results as below: 
+### Performance testing of load generator
+To aviod the performance bottleneck of web service interfering the testing results, we set the request url in `LoadGen/src/main/resources/conf/sys.properties` to an empty url (this url does nothing and just returns 'helloworld')
+```bash
+mageClassifyBaseURL=http://192.168.3.130:31500/helloworld
+```
+Then we test the concurrent ability of load generator and collect the latency data, the client and server are deployed individually on two nodes that connected with 1Gbps WLAN
+
+![evaluationOfLoadGen](https://github.com/yananYangYSU/book/blob/master/evaluationOfLoadGen.png?raw=true)
+
+Fig.1 depicts the 99th tail-latency collected by load generator with the workloads ranges from `RPS=1` to `RPS=2000`, the requests are sent using multi-threads in [open-loop](https://ieeexplore_ieee.xilesou.top/abstract/document/7581261/), the worst 99th tail-latency < 250ms when the `RPS=2000`, which shows the low queue latency in load generator. Fig.2 shows the 99th tail-latency increases linearly with the `RPS`, this demonstrates the load generator is well designed and has a good performance of workload scalability. Fig.3 shows the CPU usage in server end with increasing `RPS`, which has a same trend with the tail-latency in Fig.1. The inference service consumes < 0.5 CPU core when `RPS=400`, while the CPU usage no more than 2 CPU cores when `RPS=2000`, it demonstrates the low overhead of guicorn+flask framework
+
+
 ##  Future work
 The latest released version of load generator has satisfied our experiment needs, in the future, we plan to implement these functions as below:
 * Distributed load generator
