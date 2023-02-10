@@ -261,5 +261,5 @@ We have used the load generator for a long time in our work [2,3], and fixed man
 ## Reference
 [1] Kasture H, Sanchez D. Tailbench: a benchmark suite and evaluation methodology for latency-critical applications[C]//2016 IEEE International Symposium on Workload Characterization (IISWC). IEEE, 2016: 1-10.<br>
 [2] Y. Yang, L. Zhao, Z. Li, L. Nie, P. Chen and K. Li. ElaX: Provisioning Resource Elastically for Containerized Online Cloud Services[C]//2019 IEEE 21st International Conference on High Performance Computing and Communications (HPCC). IEEE, 2019: 1987-1994.<br>
-[3] L. Zhao, Y. Yang, K. Zhang, etc. Rhythm: Component-distinguishable Workload
-Deployment in Datacenters[C]//EuroSys 2020. ACM. Under review <br>
+[3] Laiping Zhao, Yanan Yang, Kaixuan Zhang, Xiaobo Zhou, Tie Qiu, Keqiu Li, Yungang Bao:
+Rhythm: component-distinguishable workload deployment in datacenters. EuroSys 2020: 19:1-19:17
