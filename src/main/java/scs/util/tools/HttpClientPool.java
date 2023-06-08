@@ -35,10 +35,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
-import org.apache.ibatis.javassist.expr.NewArray;
-
 import scs.pojo.TwoTuple;
-import scs.util.repository.Repository;
 
 
 /**
@@ -302,40 +299,12 @@ public class HttpClientPool {
 		}
 		return costTime;
 	}
+
 	public static void main(String[] args) {
-
-
 		HttpClientPool instance=HttpClientPool.getInstance();
 		CloseableHttpClient httpClient=instance.getConnection();
-		//System.out.println(sdf.format(new Date())); 
-
-		String queryItemsStr=Repository.solrSearchBaseURL;
-		//jsonParmStr=Repository.solrSearchParmStr;
-		String jsonParmStr="q=id:[x%20TO%20*]&&y~0.8&rows=100&start=0";
-		jsonParmStr=jsonParmStr.replace("x", Integer.toString(new Random().nextInt(100000)));
-		jsonParmStr=jsonParmStr.replace("y", RandomString.generateString(1));
-		System.out.println(jsonParmStr);
-		queryItemsStr=queryItemsStr.replace("Ip", "192.168.1.106");
-		queryItemsStr=queryItemsStr.replace("Port", "30002");
-		System.out.println(queryItemsStr+jsonParmStr);
 		for(int i=0;i<10;i++){
-			
-			System.out.println(instance.getResponseTime(httpClient, queryItemsStr+jsonParmStr));
+			System.out.println(instance.getResponseTime(httpClient,"http://"));
 		}
-		
-		
-		 
-
 	}
-	////		String url="https://1202130895179290.cn-beijing.fc.aliyuncs.com/2016-08-15/proxy/_FUN_NAS_poetry/fun-nas-function/";
-	////		for (int i=0;i<100;i++){
-	////			try {
-	////				Thread.sleep(1000);
-	////			} catch (InterruptedException e) {
-	////				// TODO Auto-generated catch block
-	////				e.printStackTrace();
-	////			}
-	////			System.out.println(instance.getResponseTime(httpClient, url));
-	////		}
-
 }

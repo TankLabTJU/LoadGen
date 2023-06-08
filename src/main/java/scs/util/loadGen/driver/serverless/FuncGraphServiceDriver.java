@@ -1,4 +1,4 @@
-package scs.util.loadGen.driver.inference;
+package scs.util.loadGen.driver.serverless;
   
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -14,29 +14,21 @@ import scs.util.tools.HttpClientPool;
  * @author Yanan Yang
  *
  */
-public class Textcnn69TFServingDriver extends AbstractJobDriver{
+public class FuncGraphServiceDriver extends AbstractJobDriver{
 	/**
 	 * Singleton code block
 	 */
-	private static Textcnn69TFServingDriver driver=null;	
 	
-	//private StringBuilder builder=new StringBuilder();
-	
-	public Textcnn69TFServingDriver(){initVariables();}
-	public synchronized static Textcnn69TFServingDriver getInstance() {
-		if (driver == null) {
-			driver = new Textcnn69TFServingDriver();
-		}
-		return driver;
+	public FuncGraphServiceDriver(String queryItemStr,String jsonParamStr) {
+		// TODO Auto-generated constructor stub
+		this.queryItemsStr=queryItemStr;
+		this.jsonParmStr=jsonParamStr;
+		initVariables();
 	}
  
 	@Override
 	protected void initVariables() {
 		httpClient=HttpClientPool.getInstance().getConnection();
-		queryItemsStr=Repository.textcnn69BaseURL;
-		jsonParmStr=Repository.textcnn69ParmStr;
-		queryItemsStr=queryItemsStr.replace("Ip", "192.168.1.105");
-		queryItemsStr=queryItemsStr.replace("Port", "30108");
 	}
 
 	/**
@@ -48,18 +40,26 @@ public class Textcnn69TFServingDriver extends AbstractJobDriver{
 		Repository.onlineQueryThreadRunning[serviceId]=true;
 		Repository.sendFlag[serviceId]=true;
 		while(Repository.onlineDataFlag[serviceId]==true){
-			if(Repository.sendFlag[serviceId]==true&&Repository.realRequestIntensity[serviceId]>0){
+			if(Repository.sendFlag[serviceId]==true){
 				CountDownLatch begin=new CountDownLatch(1);
-				int sleepUnit=1000/Repository.realRequestIntensity[serviceId];
-				for (int i=0;i<Repository.realRequestIntensity[serviceId];i++){ 
-					executor.execute(new LoadExecThread(httpClient,queryItemsStr,begin,serviceId,jsonParmStr,sleepUnit*i,"POST"));
+				if (Repository.realRequestIntensity[serviceId]==0){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else {
+					int sleepUnit=1000/Repository.realRequestIntensity[serviceId];
+					for (int i=0;i<Repository.realRequestIntensity[serviceId];i++){ 
+						executor.execute(new LoadExecThread(httpClient,queryItemsStr,begin,serviceId,jsonParmStr+random.nextInt(Integer.MAX_VALUE),sleepUnit*i,"GET"));
+					}
 				}
 				Repository.sendFlag[serviceId]=false;
 				Repository.totalRequestCount[serviceId]+=Repository.realRequestIntensity[serviceId];
 				begin.countDown();
 			}else{
 				try {
-					Thread.sleep(50);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -76,22 +76,4 @@ public class Textcnn69TFServingDriver extends AbstractJobDriver{
 		}  
 		Repository.onlineQueryThreadRunning[serviceId]=false; 
 	}
-
-	/**
-	 * generate random json parameter str for tf-serving
-	 * @return str
-	 */
-	/*private String geneJsonParmStr(int length){
-		builder.setLength(0);
-		builder.append(jsonParmStr);
-		for(int i=0;i<length;i++){
-			builder.append(random.nextDouble()).append(",");
-		}
-		builder.append(random.nextDouble());
-		builder.append("]}]}");
-		return builder.toString();
-	}*/
-	
-
-
 }

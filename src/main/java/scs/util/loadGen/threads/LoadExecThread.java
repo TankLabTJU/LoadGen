@@ -47,7 +47,7 @@ public class LoadExecThread extends Thread{
 				synchronized (Repository.onlineDataList.get(serviceId)) {
 					Repository.onlineDataList.get(serviceId).add(time);
 				}
-			} else {
+			}else{
 				int time=HttpClientPool.postResponseTime(httpclient, url, jsonObjectStr);
 				synchronized (Repository.onlineDataList.get(serviceId)) {
 					Repository.onlineDataList.get(serviceId).add(time);
